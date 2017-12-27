@@ -1,10 +1,10 @@
 const {expect} = require('chai');
 const sampleCollection = require('./sampleCollection.json');
-const seperator = require('../lib/seperator.js');
+const extractor = require('../lib/extractor.js');
 const fs = require('fs');
 const rimraf = require('rimraf');
 
-describe('postman-collection-seperator', () => {
+describe('pm-collection-extractor', () => {
 
   before(() => {
     //clear out test/testFolder to start empty
@@ -20,10 +20,10 @@ describe('postman-collection-seperator', () => {
 
   })
 
-  describe('seperator', () => {
+  describe('extractor', () => {
 
     it('should create a new json object', () => {
-      return seperator(sampleCollection)
+      return extractor(sampleCollection)
         .then(result => {
           expect(result).to.be.undefined;
           expect(fs.existsSync('./testFolder/login/login.json')).to.be.true;

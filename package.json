@@ -1,5 +1,5 @@
 {
-  "name": "postman-collection-seperator",
+  "name": "pm-collection-extractor",
   "version": "1.0.0",
   "description": "Seperates a postman collection's tests into different folders to have a better representation of all the tests being run in a Continuous Integration Environment.   ",
   "main": "lib/index.js",
@@ -21,5 +21,13 @@
   "directories": {
     "lib": "lib",
     "test": "test"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Jl14Salvador/pm-collection-extractor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Jl14Salvador/pm-collection-extractor/issues"
+  },
+  "homepage": "https://github.com/Jl14Salvador/pm-collection-extractor#readme"
 }
