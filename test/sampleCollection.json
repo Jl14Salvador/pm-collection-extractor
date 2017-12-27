@@ -1,0 +1,119 @@
+{
+	"info": {
+		"name": "Skywalker",
+		"_postman_id": "4dee0ff2-7d11-8914-60d9-8993738eda15",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"description": "",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"var data = JSON.parse(responseBody);",
+									"tests[\"Has Token\"] = typeof data.token === \"string\";",
+									"postman.setEnvironmentVariable(\"Authorization\", \"JWT \" + data.token);",
+									"postman.setEnvironmentVariable(\"userId\", data.user.user_profile_id);",
+									"postman.setEnvironmentVariable(\"currentToken\", data.token);",
+									""
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"postman.clearEnvironmentVariable(\"currentToken\");"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"autovance-username\":\"{{autovanceUsername}}\",\n    \"autovance-password\":\"{{autovancePassword}}\"\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/login",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login - Get token"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Inventory Fetch",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "api-key",
+						"value": "{{apiKey}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "JWT {{currentToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{skywalkerUrl}}/dealers/f4ce11ef-2c7e-4f74-a748-6acb796e2ef0/inventory",
+					"host": [
+						"{{skywalkerUrl}}"
+					],
+					"path": [
+						"dealers",
+						"f4ce11ef-2c7e-4f74-a748-6acb796e2ef0",
+						"inventory"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		}
+	]
+}
