@@ -23,7 +23,6 @@ describe('pm-collection-extractor', () => {
   describe('extractor', () => {
 
     it('should create a new json object', () => {
-      console.log(sampleCollection);
       return extractor(sampleCollection)
       .then(result => {
         expect(result).to.be.undefined;
