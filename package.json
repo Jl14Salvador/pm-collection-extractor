@@ -1,0 +1,11 @@
+{
+  "name": "postman-collection-seperator",
+  "version": "1.0.0",
+  "description": "Seperates a postman collection's tests into different folders to have a better representation of all the tests being run in a Continuous Integration Environment.   ",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Juan Monterrosa",
+  "license": "ISC"
+}

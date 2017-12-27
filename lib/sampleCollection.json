@@ -1,0 +1,1687 @@
+{
+	"info": {
+		"name": "Skywalker",
+		"_postman_id": "4dee0ff2-7d11-8914-60d9-8993738eda15",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"description": "",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"var data = JSON.parse(responseBody);",
+									"tests[\"Has Token\"] = typeof data.token === \"string\";",
+									"postman.setEnvironmentVariable(\"Authorization\", \"JWT \" + data.token);",
+									"postman.setEnvironmentVariable(\"userId\", data.user.user_profile_id);",
+									"postman.setEnvironmentVariable(\"currentToken\", data.token);",
+									""
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"postman.clearEnvironmentVariable(\"currentToken\");"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"autovance-username\":\"{{autovanceUsername}}\",\n    \"autovance-password\":\"{{autovancePassword}}\"\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/login",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login - Get token"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Makes",
+			"description": "",
+			"item": [
+				{
+					"name": "Make list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ff2fa4a5-b74f-49e4-85f1-60f169562ac4",
+								"type": "text/javascript",
+								"exec": [
+									"var {expect} = require('chai');",
+									"var body = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Should find make id', function () {",
+									"    _.forEach(body, make => {",
+									"        expect(make.make_id).to.exist;",
+									"    });",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{skywalkerUrl}}/makes",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"makes"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Make single",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "db453b9e-fe4c-487c-b89d-1fb0b02f2a83",
+								"type": "text/javascript",
+								"exec": [
+									"var {expect} = require('chai');",
+									"var body = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Should find make id', function () {",
+									"    expect(body.make_id).to.exist;",
+									"    expect(body.make_id).to.equal('48ad3842-da0f-49b5-b558-6cb2abb33149');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{skywalkerUrl}}/makes/48ad3842-da0f-49b5-b558-6cb2abb33149",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"makes",
+								"48ad3842-da0f-49b5-b558-6cb2abb33149"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Vehicle",
+			"description": "",
+			"item": [
+				{
+					"name": "Vehicle All",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var _ = require('lodash');",
+									"var {expect} = require('chai');",
+									"",
+									"tests[\"Content-Type is JSON\"] = postman.getResponseHeader(\"Content-Type\") === \"application/json\";",
+									"",
+									"pm.test('Expect to respond successfully', () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Testing lodash methods', () => {",
+									"  expect(responseBody.has('finance_rates')).to.be.true;",
+									"  var merged = _.merge(responseBody.finance_rates, {newKey: 1});",
+									"  expect(merged).to.have.ownProperty('newKey');",
+									"});",
+									"",
+									"pm.test('Vehicle object should exist', () => {",
+									"    expect(pm.response).to.exist;",
+									"    expect(responseBody.has('labor_rates'), 'labor_rates').to.be.true;",
+									"    expect(responseBody.has('finance_ppsa'), 'finance_ppsa').to.be.true;",
+									"    expect(responseBody.has('lease_ppsa'), 'lease_ppsa').to.be.true;",
+									"    expect(responseBody.has('low_mileage'), 'low_mileage').to.be.true;",
+									"    expect(responseBody.has('multi_security_deposit'), 'multi_security_deposit').to.be.true;",
+									"    expect(responseBody.has('finance_programs'), 'finance_programs').to.be.true;",
+									"    expect(responseBody.has('demo_mileage'), 'demo_mileage').to.be.true;",
+									"    expect(responseBody.has('lease_programs'), 'lease_programs').to.be.true;",
+									"    expect(responseBody.has('warranties'), 'warranties').to.be.true;",
+									"    expect(responseBody.has('accessories'), 'accessories').to.be.true;",
+									"    expect(responseBody.has('rebates'), 'rebates').to.be.true;",
+									"    expect(responseBody.has('lease_rates'), 'lease_rates').to.be.true;",
+									"    expect(responseBody.has('residual_values'), 'residual_values').to.be.true;",
+									"    expect(responseBody.has('finance_rates'), 'finance_rates').to.be.true;",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dealer_id\": \"1bb44cfb-a98d-4db2-a6e6-b138804956b4\",\n  \"make_id\": \"25f87b9a-a7eb-4334-938d-a6fbbb35bd76\",\n  \"model_id\": \"f4f27d9e-42c1-4deb-81f3-7d20a282a464\",\n  \"trim_id\": \"5b22561e-0501-41d3-bb38-abf8463f676f\",\n  \"year\": \"2018\",\n  \"lease_lender_id\": \"e35009a4-e441-490d-bb34-565fa3924a3f\",\n  \"finance_lender_id\": \"b9698398-46e6-44f6-a0c5-0c4dfbc6a5ea\",\n  \"region_id\": \"c89f7fbd-c680-4d6f-a08f-acd4ad9cb7d9\",\n  \"province_id\": \"3160ed7b-02dc-4a98-a5e8-531baf556a7a\",\n  \"pit\": [\"2017-05-02T18:00:01Z\"],\n  \"vehicle_type\": \"U\"\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/vehicle/",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"vehicle",
+								""
+							]
+						},
+						"description": "Vehicle All Route"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicle Accessories",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"trim_id\": \"0cb9544f-e9be-45e3-a1fb-6c6bbd1414bc\",\n  \"pit\": [\"2017-05-02T18:00:01Z\"]\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/vehicle/accessories",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"vehicle",
+								"accessories"
+							]
+						},
+						"description": "Vehicle All Route"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicle CertRates",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"model_id\": \"c363b98d-b163-4bd4-8650-38d5bacd4672\",\n  \"region_id\": \"75d0d04b-a991-45f4-8818-d3b7bdd6ac98\",\n  \"finance_lender_id\": [\"60001a1b-2d85-467b-9eea-d0b77861eb5a\", \"27c9b34d-01ac-475b-b479-747b0083a8db\"],\n  \"pit\": [\"2017-08-01T18:00:01Z\"]\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/vehicle/certifiedrates",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"vehicle",
+								"certifiedrates"
+							]
+						},
+						"description": "vehicle certified rates"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicle fees",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dealer_id\": \"8fb6d45c-ce40-4977-a9a0-2af5b58843e5\",\n  \"model_id\": \"68c30e4b-4df9-469f-9f1c-bfb6c5fd34f4\",\n  \"pit\": [\"2017-08-01T18:00:01Z\"]\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/vehicle/fees",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"vehicle",
+								"fees"
+							]
+						},
+						"description": "vehicle fees"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicle Finance programs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"region_id\": \"c6064d20-a375-4553-b9d4-b4775299dc4b\",\n  \"trim_id\": \"7ebc6f1f-33b9-4108-a0c8-e3870c3cfd25\",\n  \"pit\": [\"2017-08-01T18:00:01Z\"]\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/vehicle/financeprograms",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"vehicle",
+								"financeprograms"
+							]
+						},
+						"description": "vehicle finance program  "
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicle Finance Rates",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"region_id\": \"c6064d20-a375-4553-b9d4-b4775299dc4b\",\n  \"trim_id\": \"c866a6fe-0d0e-4723-8425-a9c9af0ca36c\",\n  \"finance_lender_id\": [\"4c57e6b8-1ec3-4c9b-b3ae-9a9e87e4cf3c\"],\n  \"pit\": [\"2017-08-01T18:00:01Z\"]\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/vehicle/financerates",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"vehicle",
+								"financerates"
+							]
+						},
+						"description": "vehicle finance rates"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicle financeppsa",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"finance_lender_id\": \"de7b3219-89bc-486f-ba8a-2f63e74cb3df\",\n  \"province_id\": \"d2137dab-1906-41c7-bd8c-5255434558b1\",\n  \"pit\": [\"2017-08-01T18:00:01Z\"]\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/vehicle/financeppsa",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"vehicle",
+								"financeppsa"
+							]
+						},
+						"description": "vehicle financeppsa"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicle Labor Rates",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"make_id\": \"65fdc09f-3a89-4e1f-a979-045d2783f5dd\",\n  \"province_id\": \"d2137dab-1906-41c7-bd8c-5255434558b1\",\n  \"pit\": [\"2017-08-01T18:00:01Z\"]\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/vehicle/laborrates",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"vehicle",
+								"laborrates"
+							]
+						},
+						"description": "vehicle labor rates"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicle Lease Demo Mileage",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"lease_lender_id\": \"e2db4229-3544-4a55-840d-d3dcd945e25d\",\n  \"pit\": [\"2017-08-01T18:00:01Z\"]\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/vehicle/leasedemomileage",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"vehicle",
+								"leasedemomileage"
+							]
+						},
+						"description": "vehicle lease demo mileage"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicle Lease Low Mileage",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"model_id\": \"d7178699-80b4-493c-97f6-af085c186c9b\",\n  \"lease_lender_id\": \"e2db4229-3544-4a55-840d-d3dcd945e25d\",\n  \"pit\": [\"2017-08-01T18:00:01Z\"]\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/vehicle/leaselowmileage",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"vehicle",
+								"leaselowmileage"
+							]
+						},
+						"description": "vehicle lease low mileage"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicle Lease PPSA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"province_id\": \"a5211c17-605d-45c9-b95c-c5bd7da4120f\",\n  \"lease_lender_id\": [\"e2db4229-3544-4a55-840d-d3dcd945e25d\", \"0fc1d00f-a560-49fc-8d83-e8ee8932e8b2\"],\n  \"pit\": [\"2017-08-01T18:00:01Z\"]\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/vehicle/leaseppsa",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"vehicle",
+								"leaseppsa"
+							]
+						},
+						"description": "vehicle lease ppsa"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicle Lease Programs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"region_id\": \"c6064d20-a375-4553-b9d4-b4775299dc4b\",\n  \"trim_id\": \"7ebc6f1f-33b9-4108-a0c8-e3870c3cfd25\",\n  \"pit\": [\"2017-08-01T18:00:01Z\"]\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/vehicle/leaseprograms",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"vehicle",
+								"leaseprograms"
+							]
+						},
+						"description": "vehicle lease programs"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicle Lease Rates",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"region_id\": \"c6064d20-a375-4553-b9d4-b4775299dc4b\",\n  \"trim_id\": \"a6d1d2b0-529b-49e2-9eb9-cd8f202024d0\",\n  \"lease_lender_id\": [\"08715813-f6f2-4a09-921a-ad8f398bf949\"],\n  \"pit\": [\"2017-08-01T18:00:01Z\"]\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/vehicle/leaserates",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"vehicle",
+								"leaserates"
+							]
+						},
+						"description": "vehicle lease rates"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicle Lease Multi Sec",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"lease_lender_id\": [\"08715813-f6f2-4a09-921a-ad8f398bf949\", \"e35009a4-e441-490d-bb34-565fa3924a3f\"],\n  \"pit\": [\"2017-08-01T18:00:01Z\"]\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/vehicle/leasemultisec",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"vehicle",
+								"leasemultisec"
+							]
+						},
+						"description": "vehicle multi security deposit"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicle rebates",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"trim_id\": \"e3b15ead-b570-4059-ac30-ba2a47c4b361\",\n  \"region_id\": \"c6064d20-a375-4553-b9d4-b4775299dc4b\",\n  \"pit\": [\"2017-11-30T18:00:01Z\"]\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/vehicle/rebates",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"vehicle",
+								"rebates"
+							]
+						},
+						"description": "vehicle rebates route"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicle Residual Values",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"trim_id\": \"23602111-6050-4fc3-8410-25d6cfab7e57\",\n  \"region_id\": \"78abf36e-0f05-410a-b6e9-b62236128d5c\",\n  \"lease_lender_id\": [\"e2db4229-3544-4a55-840d-d3dcd945e25d\"],\n  \"pit\": [\"2017-08-01T18:00:01Z\"]\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/vehicle/residualvalues",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"vehicle",
+								"residualvalues"
+							]
+						},
+						"description": "vehicle residual values"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicle Used Residual Values",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"year\": 2013,\n  \"lease_lender_id\": \"b10b05bc-3ca1-4ea5-a96e-dd3fd71c0996\",\n  \"pit\": [\"2017-08-01T18:00:01Z\"]\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/vehicle/usedresidualvalues",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"vehicle",
+								"usedresidualvalues"
+							]
+						},
+						"description": "vehicle used residual values"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicle Warranties",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"trim_id\": \"c8f4e2c2-60ef-426a-892f-14317706d785\",\n  \"region_id\": \"b88250b1-f6c1-4c3d-ae3c-a87673fda3b8\",\n  \"pit\": [\"2017-10-24T18:00:01Z\"]\n}"
+						},
+						"url": {
+							"raw": "{{skywalkerUrl}}/vehicle/warranties",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"vehicle",
+								"warranties"
+							]
+						},
+						"description": "vehicle warranties"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Models",
+			"description": "",
+			"item": [
+				{
+					"name": "Model list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "60b97027-f739-495b-8071-e0459d8a2857",
+								"type": "text/javascript",
+								"exec": [
+									"var {expect} = require('chai');",
+									"var body = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Should return list of models', function () {",
+									"    _.forEach(body, model => {",
+									"        expect(model.model_id).to.exist;",
+									"    });",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{skywalkerUrl}}/models",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"models"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Model single",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d6d7890d-3a12-4fb9-86a5-3aae20ec98f4",
+								"type": "text/javascript",
+								"exec": [
+									"var {expect} = require('chai');",
+									"var body = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Should find model id', function () {",
+									"    expect(body.model_id).to.exist;",
+									"    expect(body.model_id).to.equal('03dd0da2-33fd-4036-a34a-5a52f90e54f7');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{skywalkerUrl}}/models/03dd0da2-33fd-4036-a34a-5a52f90e54f7",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"models",
+								"03dd0da2-33fd-4036-a34a-5a52f90e54f7"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Trims",
+			"description": "",
+			"item": [
+				{
+					"name": "Trim single",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c655e268-c6c7-4dfb-a264-eb72a7059ef4",
+								"type": "text/javascript",
+								"exec": [
+									"var {expect} = require('chai');",
+									"var body = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Should find make id', function () {",
+									"    expect(body.trim_id).to.exist;",
+									"    expect(body.trim_id).to.equal('c8e6c141-d9dc-4e66-abcc-f84158dff555');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{skywalkerUrl}}/trims/c8e6c141-d9dc-4e66-abcc-f84158dff555",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"trims",
+								"c8e6c141-d9dc-4e66-abcc-f84158dff555"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Provinces",
+			"description": "",
+			"item": [
+				{
+					"name": "Province list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e3ac73ce-6bb5-4148-b62b-b3b7857e635a",
+								"type": "text/javascript",
+								"exec": [
+									"var {expect} = require('chai');",
+									"var body = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Should return list of models', function () {",
+									"    _.forEach(body, province => {",
+									"        expect(province.province_id).to.exist;",
+									"    });",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{skywalkerUrl}}/provinces",
+							"host": [
+								"{{skywalkerUrl}}"
+							],
+							"path": [
+								"provinces"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Me",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "api-key",
+						"value": "{{apiKey}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{skywalkerUrl}}/me",
+					"host": [
+						"{{skywalkerUrl}}"
+					],
+					"path": [
+						"me"
+					]
+				},
+				"description": "get current user description"
+			},
+			"response": []
+		},
+		{
+			"name": "Fee Map",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "api-key",
+						"value": "{{apiKey}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "JWT {{currentToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"dealer_id\": \"f4ce11ef-2c7e-4f74-a748-6acb796e2ef0\",\n    \"maps\": [\n      {\n          \"fee_name\": \"Air/Tire\",\n          \"ChargeId\": \"AIR\",\n          \"Description\": \"Air Tax\",\n          \"MappingGroup\": \"OE\",\n          \"Type\": \"charge\",\n          \"due\": false\n      },\n      {\n          \"fee_name\": \"Admin\",\n          \"ChargeId\": \"DSF\",\n          \"Description\": \"Doc Fee\",\n          \"MappingGroup\": \"AD\",\n          \"Type\": \"charge\",\n          \"due\": false\n      }\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{skywalkerUrl}}/partner/quorum/feemap",
+					"host": [
+						"{{skywalkerUrl}}"
+					],
+					"path": [
+						"partner",
+						"quorum",
+						"feemap"
+					]
+				},
+				"description": "Create a Fee Mapping"
+			},
+			"response": []
+		},
+		{
+			"name": "Deal Retrieve v2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const {expect} = require('chai');",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"deal // Has trade_ins array\", function () {",
+							"    const data = JSON.parse(responseBody);",
+							"    expect(data.deal).to.have.property('trade_ins');",
+							"    expect(data.deal.trade_ins).to.be.an('array');",
+							"});",
+							"",
+							"pm.test(\"deal // Has trade_in object\", function () {",
+							"    const data = JSON.parse(responseBody);",
+							"    expect(data.deal).to.have.property('trade_in');",
+							"    expect(data.deal.trade_in).to.be.an('object');",
+							"});",
+							"",
+							"pm.test(\"deal // Has tradeIn object for backwards compatibility\", function () {",
+							"    const data = JSON.parse(responseBody);",
+							"    expect(data.deal).to.have.property('tradeIn');",
+							"    expect(data.deal.tradeIn).to.be.an('object');",
+							"});",
+							"",
+							"pm.test(\"deal // Has customers array\", function () {",
+							"    const data = JSON.parse(responseBody);",
+							"    expect(data.deal).to.have.property('customers');",
+							"    expect(data.deal.customers).to.be.an('array');",
+							"});",
+							"",
+							"pm.test(\"deal // Has customer object\", function () {",
+							"    const data = JSON.parse(responseBody);",
+							"    expect(data.deal).to.have.property('customer');",
+							"    expect(data.deal.customer).to.be.an('object');",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "api-key",
+						"value": "{{apiKey}}"
+					},
+					{
+						"key": "dealer-id",
+						"value": "{{dealerId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{skywalkerUrl}}/deals/{{currentDeal}}",
+					"host": [
+						"{{skywalkerUrl}}"
+					],
+					"path": [
+						"deals",
+						"{{currentDeal}}"
+					]
+				},
+				"description": "Initialize a Deal"
+			},
+			"response": []
+		},
+		{
+			"name": "Inventory Fetch",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "api-key",
+						"value": "{{apiKey}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "JWT {{currentToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{skywalkerUrl}}/dealers/f4ce11ef-2c7e-4f74-a748-6acb796e2ef0/inventory",
+					"host": [
+						"{{skywalkerUrl}}"
+					],
+					"path": [
+						"dealers",
+						"f4ce11ef-2c7e-4f74-a748-6acb796e2ef0",
+						"inventory"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Leaselender single",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var {expect} = require('chai');",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('Should return lease lender object with id', () => {",
+							"    var body = JSON.parse(responseBody);",
+							"    ",
+							"    expect(pm.response).to.exist;",
+							"    expect(responseBody.has('lease_lender_id')).to.be.true;",
+							"    expect(body.lease_lender_id).to.equal('e35009a4-e441-490d-bb34-565fa3924a3f');",
+							"    expect(body.supports_stretch_leasing).to.be.true;",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "api-key",
+						"value": "{{apiKey}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "JWT {{currentToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"trim_id\": \"0cb9544f-e9be-45e3-a1fb-6c6bbd1414bc\",\n  \"pit\": [\"2017-05-02T18:00:01Z\"]\n}"
+				},
+				"url": {
+					"raw": "{{skywalkerUrl}}/lease_lender/e35009a4-e441-490d-bb34-565fa3924a3f",
+					"host": [
+						"{{skywalkerUrl}}"
+					],
+					"path": [
+						"lease_lender",
+						"e35009a4-e441-490d-bb34-565fa3924a3f"
+					]
+				},
+				"description": "Leaselender get single route"
+			},
+			"response": []
+		},
+		{
+			"name": "Leaselender list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var {expect} = require('chai');",
+							"var _ = require('lodash');",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('Should return list of lease lenders', () => {",
+							"    var body = JSON.parse(responseBody);",
+							"    ",
+							"    expect(pm.response).to.exist;",
+							"    _.forEach(body, singleLender => {",
+							"        expect(responseBody.has('lease_lender_id')).to.be.true;",
+							"    })",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "api-key",
+						"value": "{{apiKey}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "JWT {{currentToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"trim_id\": \"0cb9544f-e9be-45e3-a1fb-6c6bbd1414bc\",\n  \"pit\": [\"2017-05-02T18:00:01Z\"]\n}"
+				},
+				"url": {
+					"raw": "{{skywalkerUrl}}/lease_lender/",
+					"host": [
+						"{{skywalkerUrl}}"
+					],
+					"path": [
+						"lease_lender",
+						""
+					]
+				},
+				"description": "Leaselender get list route"
+			},
+			"response": []
+		}
+	]
+}

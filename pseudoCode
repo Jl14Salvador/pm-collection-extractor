@@ -1,0 +1,26 @@
+pseudo code
+
+- collection starts with object
+  info: {
+    name
+    _postman_id,
+    description,
+    schema
+  }
+- second object is items array containing all of the tests
+- each item in description is
+  item: [
+    //if a folder contains
+    {
+      name,
+      description, //if given
+      item: []
+    },
+    //if just a single test contains
+    {
+      name,
+      event: [],
+      request: {},
+      response: []
+    }
+  ]
