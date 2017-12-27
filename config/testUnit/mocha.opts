@@ -1,0 +1,4 @@
+test/**/*.spec.js
+--reporter mocha-pretty-bunyan-nyan
+--no-timeouts
+--ui bdd

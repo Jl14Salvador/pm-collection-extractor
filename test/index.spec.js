@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 const {expect} = require('chai');
 const sampleCollection = require('./sampleCollection.json');
 const extractor = require('../lib/extractor.js');
@@ -13,24 +14,24 @@ describe('pm-collection-extractor', () => {
         console.log('testFolder removed');
       });
     }
-    
   });
 
   after(() => {
 
-  })
+  });
 
   describe('extractor', () => {
 
     it('should create a new json object', () => {
+      console.log(sampleCollection);
       return extractor(sampleCollection)
-        .then(result => {
-          expect(result).to.be.undefined;
-          expect(fs.existsSync('./testFolder/login/login.json')).to.be.true;
-          expect(fs.existsSync('./testFolder/inventory_fetch.json')).to.be.true;
-        });
+      .then(result => {
+        expect(result).to.be.undefined;
+        expect(fs.existsSync('./testFolder/login/login.json')).to.be.true;
+        expect(fs.existsSync('./testFolder/inventory_fetch.json')).to.be.true;
+      });
     });
 
-  })
- 
+  });
+
 });
