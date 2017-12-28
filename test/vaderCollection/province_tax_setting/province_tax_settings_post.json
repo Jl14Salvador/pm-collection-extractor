@@ -1,0 +1,47 @@
+{
+  "name": "Province Tax Settings Post",
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test(\"Status code is 200\", function () {",
+          "    pm.response.to.have.status(200);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "api-key",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Authorization",
+        "value": "JWT {{currentToken}}"
+      }
+    ],
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"province_id\": \"a0e8b5ba-401d-48dc-a1b6-dee03fa78748\",\n  \"tax_setting_name\": \"Admin Test Setting\",\n  \"tax_setting_trigger_id\": \"c26654c7-585a-4f52-a658-96e3790ec519\",\n  \"trigger_start_value\": null,\n  \"trigger_end_value\": null,\n  \"data_value_data_type\": \"D\",\n  \"data_value_display\": \"120.00\",\n  \"help_comments\": \"This cannot be null\",\n  \"effective_date\": \"2017-07-28T00:00:00Z\",\n  \"user_profile_id\": \"b19e07ec-4f35-493e-90b7-c7c612e20f65\"\n}"
+    },
+    "url": {
+      "raw": "{{vaderUrl}}/provincetaxsettings",
+      "host": [
+        "{{vaderUrl}}"
+      ],
+      "path": [
+        "provincetaxsettings"
+      ]
+    }
+  },
+  "response": []
+}

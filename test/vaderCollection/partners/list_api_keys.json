@@ -1,0 +1,57 @@
+{
+  "name": "List API Keys",
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "var {expect} = require('chai');",
+          "",
+          "",
+          "pm.test(\"Status code is 200\", function () {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          "",
+          "pm.test(\"Returns a list of keys\", function () {",
+          "    body = JSON.parse(responseBody);",
+          "    expect(body.length, 'Array contains items').to.be.above(0);",
+          "    ",
+          "    body.forEach(key => {",
+          "        expect(key.api_key_id, 'Each key has an ID').to.exist;",
+          "    });",
+          "});"
+        ]
+      }
+    }
+  ],
+  "request": {
+    "method": "GET",
+    "header": [
+      {
+        "key": "Authorization",
+        "value": "JWT {{currentToken}}"
+      },
+      {
+        "key": "api-key",
+        "value": "{{apiKey}}"
+      }
+    ],
+    "body": {
+      "mode": "raw",
+      "raw": ""
+    },
+    "url": {
+      "raw": "{{vaderUrl}}/partners/{{partner_id}}/keys",
+      "host": [
+        "{{vaderUrl}}"
+      ],
+      "path": [
+        "partners",
+        "{{partner_id}}",
+        "keys"
+      ]
+    }
+  },
+  "response": []
+}

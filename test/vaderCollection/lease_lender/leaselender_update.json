@@ -1,0 +1,77 @@
+{
+  "name": "Leaselender update",
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "var _ = require('lodash');",
+          "var {expect} = require('chai');",
+          "",
+          "pm.test(\"Status code is 200\", function () {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          "",
+          "pm.test(\"Should return new updated object\", () => {",
+          "    expect(pm.response).to.exist;",
+          "    let body = JSON.parse(responseBody);",
+          "    expect(body.lender_name, 'lender_name').to.equal('AdminLeaseLender');",
+          "    expect(body.lender_short_code,'lender_short_code').to.equal('ALL');",
+          "    expect(body.address,'address').to.equal('123 Admin Street');",
+          "    expect(body.city,'city').to.equal('Admin City');",
+          "    expect(body.province_id,'province_id').to.equal('3160ed7b-02dc-4a98-a5e8-531baf556a7a');",
+          "    expect(body.postal_code,'postal_code').to.equal('t1h1j8');",
+          "    expect(body.phone,'phone').to.equal('4031234567');",
+          "    expect(body.minimum_rate,'minimum_rate').to.equal(1.0);",
+          "    expect(body.days_to_first_payment,'days_to_first_payment').to.equal(24);",
+          "    expect(body.pro_rata_days_in_month,'pro_rata_days_in_month').to.equal('30');",
+          "    expect(body.sec_dep_min_amount,'sec_dep_min_amount').to.equal(400);",
+          "    expect(body.sec_dep_increment,'sec_dep_increment').to.equal(50);",
+          "    expect(body.base_mileage,'base_mileage').to.equal(24000);",
+          "    expect(body.sec_dep_default,'sec_dep_default').to.equal(false);",
+          "    expect(body.upfront_mileage_charge,'upfront_mileage_charge').to.equal(0.200);",
+          "    expect(body.lender_compounding_basis,'lender_compounding_basis').to.equal('P');",
+          "    expect(body.calc_method,'calc_method').to.equal('APR');",
+          "    expect(body.new_available,'new_available').to.equal(true);",
+          "    expect(body.new_available,'new_available').to.equal(true);",
+          "    expect(body.is_active,'is_active').to.equal(true);",
+          "    expect(body.supports_stretch_leasing, 'supports_stretch_leasing').to.be.false;",
+          "});"
+        ]
+      }
+    }
+  ],
+  "request": {
+    "method": "PUT",
+    "header": [
+      {
+        "key": "api-key",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Authorization",
+        "value": "JWT {{currentToken}}"
+      }
+    ],
+    "body": {
+      "mode": "raw",
+      "raw": "{  \n  \"minimum_rate\": 1.0,\n  \"sec_dep_min_amount\": 400,\n  \"sec_dep_increment\": 50\n}"
+    },
+    "url": {
+      "raw": "{{vaderUrl}}/leaselenders/{{lease_lender_id}}",
+      "host": [
+        "{{vaderUrl}}"
+      ],
+      "path": [
+        "leaselenders",
+        "{{lease_lender_id}}"
+      ]
+    }
+  },
+  "response": []
+}

@@ -1,0 +1,56 @@
+{
+  "name": "Leaselender single",
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "var {expect} = require('chai');",
+          "",
+          "pm.test(\"Status code is 200\", function () {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          "",
+          "pm.test('Should return lease lender object with id', () => {",
+          "    var lease_lender_id = pm.environment.get(\"lease_lender_id\");",
+          "    var body = JSON.parse(responseBody);",
+          "    ",
+          "    expect(pm.response).to.exist;",
+          "    expect(responseBody.has('lease_lender_id')).to.be.true;",
+          "    expect(body.lease_lender_id).to.equal(lease_lender_id);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "request": {
+    "method": "GET",
+    "header": [
+      {
+        "key": "Authorization",
+        "value": "JWT {{currentToken}}"
+      },
+      {
+        "key": "api-key",
+        "value": "{{apiKey}}"
+      }
+    ],
+    "body": {
+      "mode": "raw",
+      "raw": ""
+    },
+    "url": {
+      "raw": "{{vaderUrl}}/leaselenders/{{lease_lender_id}}",
+      "host": [
+        "{{vaderUrl}}"
+      ],
+      "path": [
+        "leaselenders",
+        "{{lease_lender_id}}"
+      ]
+    },
+    "description": "Lookup a single lease lender with a lease_lender_id"
+  },
+  "response": []
+}

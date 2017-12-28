@@ -1,0 +1,51 @@
+{
+  "name": "Expire API Key",
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test(\"Status code is 200\", function () {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          ""
+        ]
+      }
+    }
+  ],
+  "request": {
+    "method": "DELETE",
+    "header": [
+      {
+        "key": "Authorization",
+        "value": "JWT {{currentToken}}"
+      },
+      {
+        "key": "api-key",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"user_profile_id\": \"internal\",\n  \"expiry_date\": \"2017-10-01T01:00:00Z\"\n}"
+    },
+    "url": {
+      "raw": "{{vaderUrl}}/partners/{{partner_id}}/keys/{{api_key_id}}",
+      "host": [
+        "{{vaderUrl}}"
+      ],
+      "path": [
+        "partners",
+        "{{partner_id}}",
+        "keys",
+        "{{api_key_id}}"
+      ]
+    }
+  },
+  "response": []
+}

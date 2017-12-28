@@ -1,0 +1,45 @@
+{
+  "name": "Delete Partner",
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test(\"Status code is 200\", function () {",
+          "    pm.response.to.have.status(200);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "request": {
+    "method": "DELETE",
+    "header": [
+      {
+        "key": "Authorization",
+        "value": "JWT {{currentToken}}"
+      },
+      {
+        "key": "api-key",
+        "value": "{{apiKey}}"
+      }
+    ],
+    "body": {
+      "mode": "raw",
+      "raw": ""
+    },
+    "url": {
+      "raw": "{{vaderUrl}}/partners/{{partner_id}}",
+      "host": [
+        "{{vaderUrl}}"
+      ],
+      "path": [
+        "partners",
+        "{{partner_id}}"
+      ]
+    },
+    "description": "gets partners information"
+  },
+  "response": []
+}

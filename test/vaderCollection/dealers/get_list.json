@@ -1,0 +1,43 @@
+{
+  "name": "Get List",
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const response = pm.response.json();",
+          "postman.setEnvironmentVariable(\"dealerId\", response[0].dealer_id);"
+        ]
+      }
+    }
+  ],
+  "request": {
+    "method": "GET",
+    "header": [
+      {
+        "key": "Authorization",
+        "value": "JWT {{currentToken}}"
+      },
+      {
+        "key": "api-key",
+        "value": "{{apiKey}}"
+      }
+    ],
+    "body": {
+      "mode": "raw",
+      "raw": ""
+    },
+    "url": {
+      "raw": "{{vaderUrl}}/dealers/",
+      "host": [
+        "{{vaderUrl}}"
+      ],
+      "path": [
+        "dealers",
+        ""
+      ]
+    }
+  },
+  "response": []
+}

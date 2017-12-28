@@ -1,0 +1,73 @@
+{
+  "name": "Dealer Fee Defaults (Toyota Filter)",
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "var _ = require('lodash');",
+          "var {expect} = require('chai');",
+          "",
+          "pm.test(\"Status code is 200\", function () {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          "",
+          "pm.test('should respond with a dealers fee defaults', () => {",
+          "    body = JSON.parse(responseBody);",
+          "    let dealerId = pm.environment.get(\"dealerId\");",
+          "",
+          "    _.forEach(body, fee => {",
+          "        expect(fee.dealer_id).to.equal(dealerId);",
+          "    })",
+          "});",
+          "",
+          "pm.test('should respond with only toyota fees', () => {",
+          "    body = JSON.parse(responseBody);",
+          "",
+          "    _.forEach(body, fee => {",
+          "        expect(fee.model.make.make_id).to.equal(\"25f87b9a-a7eb-4334-938d-a6fbbb35bd76\");",
+          "    })",
+          "});"
+        ]
+      }
+    }
+  ],
+  "request": {
+    "method": "GET",
+    "header": [
+      {
+        "key": "Authorization",
+        "value": "JWT {{currentToken}}"
+      },
+      {
+        "key": "api-key",
+        "value": "{{apiKey}}"
+      }
+    ],
+    "body": {
+      "mode": "raw",
+      "raw": ""
+    },
+    "url": {
+      "raw": "{{vaderUrl}}/dealers/{{dealerId}}/feedefaults?makes=25f87b9a-a7eb-4334-938d-a6fbbb35bd76",
+      "host": [
+        "{{vaderUrl}}"
+      ],
+      "path": [
+        "dealers",
+        "{{dealerId}}",
+        "feedefaults"
+      ],
+      "query": [
+        {
+          "key": "makes",
+          "value": "25f87b9a-a7eb-4334-938d-a6fbbb35bd76",
+          "equals": true
+        }
+      ]
+    },
+    "description": "List a specific dealers fee defaults, filtered by toyota"
+  },
+  "response": []
+}

@@ -1,0 +1,52 @@
+{
+  "name": "Get List",
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "var {expect} = require('chai');",
+          "",
+          "pm.test(\"Status code is 200\", function () {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          "",
+          "pm.test(\"Returns array of trims\", () => {",
+          "  let body = JSON.parse(responseBody);",
+          "  expect(body).to.be.an('array');",
+          "  expect(body.length).to.be.above(0);",
+          "  expect(body[0]).to.have.property('trim_id');",
+          "  ",
+          "  postman.setEnvironmentVariable(\"trim_id\", body[0].trim_id);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "request": {
+    "method": "GET",
+    "header": [
+      {
+        "key": "Authorization",
+        "value": "JWT {{currentToken}}"
+      },
+      {
+        "key": "api-key",
+        "value": "{{apiKey}}"
+      }
+    ],
+    "body": {},
+    "url": {
+      "raw": "{{vaderUrl}}/trims",
+      "host": [
+        "{{vaderUrl}}"
+      ],
+      "path": [
+        "trims"
+      ]
+    },
+    "description": ""
+  },
+  "response": []
+}

@@ -1,0 +1,34 @@
+{
+  "name": "Finance Lender Post",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "api-key",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Authorization",
+        "value": "JWT {{currentToken}}"
+      }
+    ],
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"lender_name\": \"Autovance Test Lender\",\n    \"lender_short_code\": \"ATL\",\n    \"province_id\": \"d2137dab-1906-41c7-bd8c-5255434558b1\",\n     \"minimum_rate\": 0.0000,\n     \"calc_method\": \"ST\",\n     \"is_active\": true,\n     \"phone\": \"1-800-123-4567\"\n}"
+    },
+    "url": {
+      "raw": "{{vaderUrl}}/financelenders",
+      "host": [
+        "{{vaderUrl}}"
+      ],
+      "path": [
+        "financelenders"
+      ]
+    }
+  },
+  "response": []
+}

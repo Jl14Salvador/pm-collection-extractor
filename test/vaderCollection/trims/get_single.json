@@ -1,0 +1,44 @@
+{
+  "name": "Get Single",
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "var {expect} = require('chai');",
+          "",
+          "pm.test(\"Status code is 200\", function () {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          ""
+        ]
+      }
+    }
+  ],
+  "request": {
+    "method": "GET",
+    "header": [
+      {
+        "key": "Authorization",
+        "value": "JWT {{currentToken}}"
+      },
+      {
+        "key": "api-key",
+        "value": "{{apiKey}}"
+      }
+    ],
+    "body": {},
+    "url": {
+      "raw": "{{vaderUrl}}/trims/{{trim_id}}",
+      "host": [
+        "{{vaderUrl}}"
+      ],
+      "path": [
+        "trims/{{trim_id}}"
+      ]
+    },
+    "description": ""
+  },
+  "response": []
+}
