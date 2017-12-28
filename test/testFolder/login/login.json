@@ -1,0 +1,57 @@
+{
+  "name": "Login",
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "tests[\"Status code is 200\"] = responseCode.code === 200;",
+          "var data = JSON.parse(responseBody);",
+          "tests[\"Has Token\"] = typeof data.token === \"string\";",
+          "postman.setEnvironmentVariable(\"Authorization\", \"JWT \" + data.token);",
+          "postman.setEnvironmentVariable(\"userId\", data.user.user_profile_id);",
+          "postman.setEnvironmentVariable(\"currentToken\", data.token);",
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "postman.clearEnvironmentVariable(\"currentToken\");"
+        ]
+      }
+    }
+  ],
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "api-key",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "body": {
+      "mode": "raw",
+      "raw": "{\n    \"autovance-username\":\"{{autovanceUsername}}\",\n    \"autovance-password\":\"{{autovancePassword}}\"\n}"
+    },
+    "url": {
+      "raw": "{{skywalkerUrl}}/login",
+      "host": [
+        "{{skywalkerUrl}}"
+      ],
+      "path": [
+        "login"
+      ]
+    },
+    "description": "Login - Get token"
+  },
+  "response": []
+}

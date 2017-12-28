@@ -1,0 +1,46 @@
+{
+  "name": "Inventory Fetch",
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test(\"Status code is 200\", function () {",
+          "    pm.response.to.have.status(200);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "request": {
+    "method": "GET",
+    "header": [
+      {
+        "key": "api-key",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "Authorization",
+        "value": "JWT {{currentToken}}"
+      }
+    ],
+    "body": {
+      "mode": "raw",
+      "raw": ""
+    },
+    "url": {
+      "raw": "{{skywalkerUrl}}/dealers/f4ce11ef-2c7e-4f74-a748-6acb796e2ef0/inventory",
+      "host": [
+        "{{skywalkerUrl}}"
+      ],
+      "path": [
+        "dealers",
+        "f4ce11ef-2c7e-4f74-a748-6acb796e2ef0",
+        "inventory"
+      ]
+    },
+    "description": null
+  },
+  "response": []
+}
