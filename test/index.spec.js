@@ -25,7 +25,7 @@ describe('pm-collection-extractor', () => {
 
   describe('extractor', () => {
 
-    it('should extract tests into a new folder', () => {
+    it.only('should extract tests into a new folder', () => {
       return extractor(sampleCollection)
       .then(results => {
         _.forEach(results, result => {
@@ -36,7 +36,7 @@ describe('pm-collection-extractor', () => {
       });
     });
 
-    it('should extract vader tests into a new folder', () => {
+    it.skip('should extract vader tests into a new folder', () => {
       return extractor(sampleCollection2)
         .then(results => {
           _.forEach(results, result => {
