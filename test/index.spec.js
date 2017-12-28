@@ -23,14 +23,14 @@ describe('pm-collection-extractor', () => {
 
   describe('extractor', () => {
 
-    it('should create a new json object', () => {
+    it('should extract tests into a new folder', () => {
       return extractor(sampleCollection)
       .then(results => {
         _.forEach(results, result => {
           expect(result).to.be.undefined;
         });
-        expect(fs.existsSync('./test/testsFolder/login/login.json')).to.be.true;
-        expect(fs.existsSync('./test/testsFolder/inventory_fetch.json')).to.be.true;
+        expect(fs.existsSync('./test/skywalkerCollection/login/login.json')).to.be.true;
+        expect(fs.existsSync('./test/skywalkerCollection/inventory_fetch.json')).to.be.true;
       });
     });
 
