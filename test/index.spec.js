@@ -29,8 +29,8 @@ describe('pm-collection-extractor', () => {
         _.forEach(results, result => {
           expect(result).to.be.undefined;
         });
-        expect(fs.existsSync('./test/testFolder/login/login.json')).to.be.true;
-        expect(fs.existsSync('./test/testFolder/inventory_fetch.json')).to.be.true;
+        expect(fs.existsSync('./test/testsFolder/login/login.json')).to.be.true;
+        expect(fs.existsSync('./test/testsFolder/inventory_fetch.json')).to.be.true;
       });
     });
 
