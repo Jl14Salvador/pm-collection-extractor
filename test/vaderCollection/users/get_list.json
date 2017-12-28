@@ -1,0 +1,54 @@
+{
+  "name": "Get List",
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "var {expect} = require('chai');",
+          "",
+          "pm.test(\"Status code is 200\", function () {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          "",
+          "pm.test('should respond with list of users', () => {",
+          "    body = JSON.parse(responseBody);",
+          "    expect(body[0].user_profile_id).to.exist;",
+          "    _.forEach(body, userProfile => {",
+          "        expect(userProfile.user_profile_id).to.exist;",
+          "    })",
+          "});"
+        ]
+      }
+    }
+  ],
+  "request": {
+    "method": "GET",
+    "header": [
+      {
+        "key": "Authorization",
+        "value": "JWT {{currentToken}}"
+      },
+      {
+        "key": "api-key",
+        "value": "{{apiKey}}"
+      }
+    ],
+    "body": {
+      "mode": "raw",
+      "raw": ""
+    },
+    "url": {
+      "raw": "{{vaderUrl}}/users",
+      "host": [
+        "{{vaderUrl}}"
+      ],
+      "path": [
+        "users"
+      ]
+    },
+    "description": "List the all the users"
+  },
+  "response": []
+}

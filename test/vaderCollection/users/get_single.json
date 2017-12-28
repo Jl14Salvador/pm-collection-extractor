@@ -1,0 +1,56 @@
+{
+  "name": "Get Single",
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "var {expect} = require('chai');",
+          "",
+          "pm.test(\"Status code is 200\", function () {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          "",
+          "pm.test('Should return user object with id', () => {",
+          "    var lease_lender_id = pm.environment.get(\"lease_lender_id\");",
+          "    var body = JSON.parse(responseBody);",
+          "    ",
+          "    expect(pm.response).to.exist;",
+          "    expect(responseBody.has('user_profile_id')).to.be.true;",
+          "    expect(body.user_profile_id).to.equal('8047d4db-8488-475f-a136-7bc7422ca662');",
+          "});"
+        ]
+      }
+    }
+  ],
+  "request": {
+    "method": "GET",
+    "header": [
+      {
+        "key": "Authorization",
+        "value": "JWT {{currentToken}}"
+      },
+      {
+        "key": "api-key",
+        "value": "{{apiKey}}"
+      }
+    ],
+    "body": {
+      "mode": "raw",
+      "raw": ""
+    },
+    "url": {
+      "raw": "{{vaderUrl}}/users/8047d4db-8488-475f-a136-7bc7422ca662",
+      "host": [
+        "{{vaderUrl}}"
+      ],
+      "path": [
+        "users",
+        "8047d4db-8488-475f-a136-7bc7422ca662"
+      ]
+    },
+    "description": "Lookup a single user with a user_profile_id"
+  },
+  "response": []
+}

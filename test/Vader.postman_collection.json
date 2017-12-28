@@ -1,0 +1,1416 @@
+{
+	"info": {
+		"name": "Vader",
+		"_postman_id": "55b18e94-f19c-1b84-b879-c5fa2be17ce1",
+		"description": "Integration Tests for the Internal Vader API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"var data = JSON.parse(responseBody);",
+									"tests[\"Has Token\"] = typeof data.token === \"string\";",
+									"postman.setEnvironmentVariable(\"currentToken\", data.token);"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"postman.clearEnvironmentVariable(\"currentToken\");"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"autovance-username\":\"{{autovanceUsername}}\",\n    \"autovance-password\":\"{{autovancePassword}}\"\n}"
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/login",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login - Get token"
+					},
+					"response": []
+				},
+				{
+					"name": "Get List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var {expect} = require('chai');",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('should respond with list of users', () => {",
+									"    body = JSON.parse(responseBody);",
+									"    expect(body[0].user_profile_id).to.exist;",
+									"    _.forEach(body, userProfile => {",
+									"        expect(userProfile.user_profile_id).to.exist;",
+									"    })",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/users",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "List the all the users"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var {expect} = require('chai');",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Should return user object with id', () => {",
+									"    var lease_lender_id = pm.environment.get(\"lease_lender_id\");",
+									"    var body = JSON.parse(responseBody);",
+									"    ",
+									"    expect(pm.response).to.exist;",
+									"    expect(responseBody.has('user_profile_id')).to.be.true;",
+									"    expect(body.user_profile_id).to.equal('8047d4db-8488-475f-a136-7bc7422ca662');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/users/8047d4db-8488-475f-a136-7bc7422ca662",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"users",
+								"8047d4db-8488-475f-a136-7bc7422ca662"
+							]
+						},
+						"description": "Lookup a single user with a user_profile_id"
+					},
+					"response": []
+				},
+				{
+					"name": "Me",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/me",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"me"
+							]
+						},
+						"description": "get current user description"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Partners",
+			"item": [
+				{
+					"name": "Get List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/partners",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"partners"
+							]
+						},
+						"description": "gets partners information"
+					},
+					"response": []
+				},
+				{
+					"name": "Insert Partner",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"postman.setEnvironmentVariable(\"partner_id\", response.partner_id);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"partner_name\": \"Integration Test Partner\",\n\t\"key_type\": \"internal\"\n}"
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/partners",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"partners"
+							]
+						},
+						"description": "gets partners information"
+					},
+					"response": []
+				},
+				{
+					"name": "Add API Key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"postman.setEnvironmentVariable(\"api_key_id\", response.api_key_id);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"key_type\": \"internal\",\n  \"effective_date\": \"2017-01-01T01:00:00Z\"\n}"
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/partners/{{partner_id}}/keys",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"partners",
+								"{{partner_id}}",
+								"keys"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List API Keys",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var {expect} = require('chai');",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Returns a list of keys\", function () {",
+									"    body = JSON.parse(responseBody);",
+									"    expect(body.length, 'Array contains items').to.be.above(0);",
+									"    ",
+									"    body.forEach(key => {",
+									"        expect(key.api_key_id, 'Each key has an ID').to.exist;",
+									"    });",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/partners/{{partner_id}}/keys",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"partners",
+								"{{partner_id}}",
+								"keys"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh API Key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"postman.setEnvironmentVariable(\"api_key_id\", response.api_key_id);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_profile_id\": \"internal\",\n  \"expiry_date\": \"2017-10-01T01:00:00Z\"\n}"
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/partners/{{partner_id}}/keys/{{api_key_id}}",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"partners",
+								"{{partner_id}}",
+								"keys",
+								"{{api_key_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Expire API Key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_profile_id\": \"internal\",\n  \"expiry_date\": \"2017-10-01T01:00:00Z\"\n}"
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/partners/{{partner_id}}/keys/{{api_key_id}}",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"partners",
+								"{{partner_id}}",
+								"keys",
+								"{{api_key_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Partner",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/partners/{{partner_id}}",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"partners",
+								"{{partner_id}}"
+							]
+						},
+						"description": "gets partners information"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Lease Lender",
+			"item": [
+				{
+					"name": "Leaselender post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var _ = require('lodash');",
+									"var {expect} = require('chai');",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Should return new object\", () => {",
+									"    expect(pm.response).to.exist;",
+									"    let body = JSON.parse(responseBody);",
+									"    expect(body.lender_name, 'lender_name').to.equal('AdminLeaseLender');",
+									"    expect(body.lender_short_code,'lender_short_code').to.equal('ALL');",
+									"    expect(body.address,'address').to.equal('123 Admin Street');",
+									"    expect(body.city,'city').to.equal('Admin City');",
+									"    expect(body.province_id,'province_id').to.equal('3160ed7b-02dc-4a98-a5e8-531baf556a7a');",
+									"    expect(body.postal_code,'postal_code').to.equal('t1h1j8');",
+									"    expect(body.phone,'phone').to.equal('4031234567');",
+									"    expect(body.minimum_rate,'minimum_rate').to.equal(0.0000001);",
+									"    expect(body.days_to_first_payment,'days_to_first_payment').to.equal(24);",
+									"    expect(body.pro_rata_days_in_month,'pro_rata_days_in_month').to.equal('30');",
+									"    expect(body.sec_dep_min_amount,'sec_dep_min_amount').to.equal(300);",
+									"    expect(body.sec_dep_increment,'sec_dep_increment').to.equal(25);",
+									"    expect(body.base_mileage,'base_mileage').to.equal(24000);",
+									"    expect(body.sec_dep_default,'sec_dep_default').to.equal(false);",
+									"    expect(body.upfront_mileage_charge,'upfront_mileage_charge').to.equal(0.200);",
+									"    expect(body.lender_compounding_basis,'lender_compounding_basis').to.equal('P');",
+									"    expect(body.calc_method,'calc_method').to.equal('APR');",
+									"    expect(body.new_available,'new_available').to.equal(true);",
+									"    expect(body.new_available,'new_available').to.equal(true);",
+									"    expect(body.is_active,'is_active').to.equal(true);",
+									"    expect(body.supports_stretch_leasing, 'supports_stretch_leasing').to.be.false;",
+									"    ",
+									"    postman.setEnvironmentVariable(\"lease_lender_id\", body.lease_lender_id);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"lender_name\": \"AdminLeaseLender\",\n  \"lender_short_code\": \"ALL\",\n  \"address\": \"123 Admin Street\",\n  \"city\": \"Admin City\",\n  \"province_id\": \"3160ed7b-02dc-4a98-a5e8-531baf556a7a\",\n  \"postal_code\": \"t1h1j8\",\n  \"phone\": \"4031234567\",\n  \"minimum_rate\": 0.0000001,\n  \"days_to_first_payment\": 24,\n  \"pro_rata_days_in_month\": 30,\n  \"sec_dep_min_amount\": 300,\n  \"sec_dep_increment\": 25,\n  \"base_mileage\": 24000,\n  \"sec_dep_default\": false,\n  \"upfront_mileage_charge\": 0.200,\n  \"lender_compounding_basis\": \"P\",\n  \"calc_method\": \"APR\",\n  \"new_available\": true,\n  \"used_available\": true,\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/leaselenders/",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"leaselenders",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leaselender single",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var {expect} = require('chai');",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Should return lease lender object with id', () => {",
+									"    var lease_lender_id = pm.environment.get(\"lease_lender_id\");",
+									"    var body = JSON.parse(responseBody);",
+									"    ",
+									"    expect(pm.response).to.exist;",
+									"    expect(responseBody.has('lease_lender_id')).to.be.true;",
+									"    expect(body.lease_lender_id).to.equal(lease_lender_id);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/leaselenders/{{lease_lender_id}}",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"leaselenders",
+								"{{lease_lender_id}}"
+							]
+						},
+						"description": "Lookup a single lease lender with a lease_lender_id"
+					},
+					"response": []
+				},
+				{
+					"name": "Leaselender list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var _ = require('lodash');",
+									"var {expect} = require('chai');",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('should respond with list of leaselenders', () => {",
+									"    body = JSON.parse(responseBody);",
+									"    expect(body[0].lease_lender_id).to.exist;",
+									"    _.forEach(body, lender => {",
+									"        expect(lender.lease_lender_id).to.exist;",
+									"    })",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/leaselenders",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"leaselenders"
+							]
+						},
+						"description": "List the all the users"
+					},
+					"response": []
+				},
+				{
+					"name": "Leaselender update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var _ = require('lodash');",
+									"var {expect} = require('chai');",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Should return new updated object\", () => {",
+									"    expect(pm.response).to.exist;",
+									"    let body = JSON.parse(responseBody);",
+									"    expect(body.lender_name, 'lender_name').to.equal('AdminLeaseLender');",
+									"    expect(body.lender_short_code,'lender_short_code').to.equal('ALL');",
+									"    expect(body.address,'address').to.equal('123 Admin Street');",
+									"    expect(body.city,'city').to.equal('Admin City');",
+									"    expect(body.province_id,'province_id').to.equal('3160ed7b-02dc-4a98-a5e8-531baf556a7a');",
+									"    expect(body.postal_code,'postal_code').to.equal('t1h1j8');",
+									"    expect(body.phone,'phone').to.equal('4031234567');",
+									"    expect(body.minimum_rate,'minimum_rate').to.equal(1.0);",
+									"    expect(body.days_to_first_payment,'days_to_first_payment').to.equal(24);",
+									"    expect(body.pro_rata_days_in_month,'pro_rata_days_in_month').to.equal('30');",
+									"    expect(body.sec_dep_min_amount,'sec_dep_min_amount').to.equal(400);",
+									"    expect(body.sec_dep_increment,'sec_dep_increment').to.equal(50);",
+									"    expect(body.base_mileage,'base_mileage').to.equal(24000);",
+									"    expect(body.sec_dep_default,'sec_dep_default').to.equal(false);",
+									"    expect(body.upfront_mileage_charge,'upfront_mileage_charge').to.equal(0.200);",
+									"    expect(body.lender_compounding_basis,'lender_compounding_basis').to.equal('P');",
+									"    expect(body.calc_method,'calc_method').to.equal('APR');",
+									"    expect(body.new_available,'new_available').to.equal(true);",
+									"    expect(body.new_available,'new_available').to.equal(true);",
+									"    expect(body.is_active,'is_active').to.equal(true);",
+									"    expect(body.supports_stretch_leasing, 'supports_stretch_leasing').to.be.false;",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{  \n  \"minimum_rate\": 1.0,\n  \"sec_dep_min_amount\": 400,\n  \"sec_dep_increment\": 50\n}"
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/leaselenders/{{lease_lender_id}}",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"leaselenders",
+								"{{lease_lender_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leaselender delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var _ = require('lodash');",
+									"var {expect} = require('chai');",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('is_active should be set to false when deleted', () => {",
+									"    expect(responseBody.has('is_active')).to.be.true;",
+									"    body = JSON.parse(responseBody);",
+									"    expect(body.is_active).to.be.false;",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/leaselenders/{{lease_lender_id}}",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"leaselenders",
+								"{{lease_lender_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Fee Defaults",
+			"item": [
+				{
+					"name": "Global Fee Defaults - Filtered Make",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var _ = require('lodash');",
+									"var {expect} = require('chai');",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('should respond with global fee defaults', () => {",
+									"    body = JSON.parse(responseBody);",
+									"",
+									"    _.forEach(body, lender => {",
+									"        expect(lender.dealer_id).to.equal(null);",
+									"    })",
+									"});",
+									"",
+									"pm.test('should respond with only toyota fees', () => {",
+									"    body = JSON.parse(responseBody);",
+									"",
+									"    _.forEach(body, fee => {",
+									"        expect(fee.model.make.make_id).to.equal(\"25f87b9a-a7eb-4334-938d-a6fbbb35bd76\");",
+									"    })",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/feedefaults?makes=25f87b9a-a7eb-4334-938d-a6fbbb35bd76",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"feedefaults"
+							],
+							"query": [
+								{
+									"key": "makes",
+									"value": "25f87b9a-a7eb-4334-938d-a6fbbb35bd76",
+									"equals": true
+								}
+							]
+						},
+						"description": "List the all the users"
+					},
+					"response": []
+				},
+				{
+					"name": "Global Fee Defaults",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var _ = require('lodash');",
+									"var {expect} = require('chai');",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('should respond with global fee defaults', () => {",
+									"    body = JSON.parse(responseBody);",
+									"",
+									"    _.forEach(body, lender => {",
+									"        expect(lender.dealer_id).to.equal(null);",
+									"    })",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/feedefaults",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"feedefaults"
+							]
+						},
+						"description": "List the all the users"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Dealers",
+			"item": [
+				{
+					"name": "Get List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const response = pm.response.json();",
+									"postman.setEnvironmentVariable(\"dealerId\", response[0].dealer_id);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/dealers/",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"dealers",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Dealer Fee Defaults",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var _ = require('lodash');",
+									"var {expect} = require('chai');",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('should respond with a dealers fee defaults', () => {",
+									"    body = JSON.parse(responseBody);",
+									"    let dealerId = pm.environment.get(\"dealerId\");",
+									"",
+									"    _.forEach(body, lender => {",
+									"        expect(lender.dealer_id).to.equal(dealerId);",
+									"    })",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/dealers/{{dealerId}}/feedefaults",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"dealers",
+								"{{dealerId}}",
+								"feedefaults"
+							]
+						},
+						"description": "List a specific dealers fee defaults"
+					},
+					"response": []
+				},
+				{
+					"name": "Dealer Fee Defaults (Toyota Filter)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var _ = require('lodash');",
+									"var {expect} = require('chai');",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('should respond with a dealers fee defaults', () => {",
+									"    body = JSON.parse(responseBody);",
+									"    let dealerId = pm.environment.get(\"dealerId\");",
+									"",
+									"    _.forEach(body, fee => {",
+									"        expect(fee.dealer_id).to.equal(dealerId);",
+									"    })",
+									"});",
+									"",
+									"pm.test('should respond with only toyota fees', () => {",
+									"    body = JSON.parse(responseBody);",
+									"",
+									"    _.forEach(body, fee => {",
+									"        expect(fee.model.make.make_id).to.equal(\"25f87b9a-a7eb-4334-938d-a6fbbb35bd76\");",
+									"    })",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/dealers/{{dealerId}}/feedefaults?makes=25f87b9a-a7eb-4334-938d-a6fbbb35bd76",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"dealers",
+								"{{dealerId}}",
+								"feedefaults"
+							],
+							"query": [
+								{
+									"key": "makes",
+									"value": "25f87b9a-a7eb-4334-938d-a6fbbb35bd76",
+									"equals": true
+								}
+							]
+						},
+						"description": "List a specific dealers fee defaults, filtered by toyota"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Finance Lender",
+			"item": [
+				{
+					"name": "Finance Lender Post",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"lender_name\": \"Autovance Test Lender\",\n    \"lender_short_code\": \"ATL\",\n    \"province_id\": \"d2137dab-1906-41c7-bd8c-5255434558b1\",\n     \"minimum_rate\": 0.0000,\n     \"calc_method\": \"ST\",\n     \"is_active\": true,\n     \"phone\": \"1-800-123-4567\"\n}"
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/financelenders",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"financelenders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Province Tax Setting",
+			"item": [
+				{
+					"name": "Province Tax Settings Post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"province_id\": \"a0e8b5ba-401d-48dc-a1b6-dee03fa78748\",\n  \"tax_setting_name\": \"Admin Test Setting\",\n  \"tax_setting_trigger_id\": \"c26654c7-585a-4f52-a658-96e3790ec519\",\n  \"trigger_start_value\": null,\n  \"trigger_end_value\": null,\n  \"data_value_data_type\": \"D\",\n  \"data_value_display\": \"120.00\",\n  \"help_comments\": \"This cannot be null\",\n  \"effective_date\": \"2017-07-28T00:00:00Z\",\n  \"user_profile_id\": \"b19e07ec-4f35-493e-90b7-c7c612e20f65\"\n}"
+						},
+						"url": {
+							"raw": "{{vaderUrl}}/provincetaxsettings",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"provincetaxsettings"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Trims",
+			"description": "",
+			"item": [
+				{
+					"name": "Get List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var {expect} = require('chai');",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Returns array of trims\", () => {",
+									"  let body = JSON.parse(responseBody);",
+									"  expect(body).to.be.an('array');",
+									"  expect(body.length).to.be.above(0);",
+									"  expect(body[0]).to.have.property('trim_id');",
+									"  ",
+									"  postman.setEnvironmentVariable(\"trim_id\", body[0].trim_id);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{vaderUrl}}/trims",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"trims"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var {expect} = require('chai');",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{currentToken}}"
+							},
+							{
+								"key": "api-key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{vaderUrl}}/trims/{{trim_id}}",
+							"host": [
+								"{{vaderUrl}}"
+							],
+							"path": [
+								"trims/{{trim_id}}"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
