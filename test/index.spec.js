@@ -5,6 +5,7 @@ const fs = require('fs');
 const rimraf = require('rimraf');
 const _ = require('lodash');
 
+const {generateFilePaths} = require('../lib/assembler.js');
 const sampleCollection = require('./sampleCollection.json');
 const sampleCollection2 = require('./Vader.postman_collection.json');
 
@@ -54,6 +55,26 @@ describe('pm-collection-extractor', () => {
           expect(fs.existsSync('./test/vaderCollection/finance_lender')).to.be.true;
           expect(fs.existsSync('./test/vaderCollection/province_tax_setting')).to.be.true;
           expect(fs.existsSync('./test/vaderCollection/trims')).to.be.true;
+        });
+    });
+
+  });
+
+  describe('assembler', () => {
+
+    it('should return skywalker files', () => {
+      return generateFilePaths('test/skywalkerCollection')
+      .then(results => {
+        console.log('SKYWALKER\n', results);
+        expect(results).to.be.an('array');
+      });
+    });
+
+    it('should return vader files', () => {
+      return generateFilePaths('test/vaderCollection')
+        .then(results => {
+          console.log('VADER\n', results);
+          expect(results).to.be.an('array');
         });
     });
 
