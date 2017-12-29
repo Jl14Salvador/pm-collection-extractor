@@ -1,0 +1,6 @@
+{
+  "name": "Vader",
+  "_postman_id": "55b18e94-f19c-1b84-b879-c5fa2be17ce1",
+  "description": "Integration Tests for the Internal Vader API",
+  "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+}
