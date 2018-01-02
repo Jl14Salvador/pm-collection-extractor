@@ -11,6 +11,10 @@ const sampleCollection2 = require('./Vader.postman_collection.json');
 
 describe('pm-collection-extractor', () => {
 
+  const shouldNotPass = () => {
+    throw new Error('should not pass');
+  };
+
   before(() => {
     //clear out test/testFolder to start empty
     if (fs.existsSync('./testFolder/')) {
@@ -58,6 +62,14 @@ describe('pm-collection-extractor', () => {
         });
     });
 
+    it('should throw when no collection is passed', () => {
+      return extractor()
+      .then(shouldNotPass)
+      .catch(err => {
+        expect(err.message).to.equal('No collection passed');
+      });
+    });
+
   });
 
   describe('assembler', () => {
@@ -93,7 +105,20 @@ describe('pm-collection-extractor', () => {
           console.log('RESULT VADER\n', result);
           expect(result.info).to.exist;
           expect(result.item).to.exist;
+          _.forEach(result.item, item => {
+            expect(item.name).to.exist;
+            console.log('ITEM', item);
+          });
+          // console.log('VADER ITEMS\n', result.item);
         });
+    });
+
+    it('should throw error if no path passed', () => {
+      return Assembler.assembleCollection()
+      .then(shouldNotPass)
+      .catch(err => {
+        expect(err.message).to.equal('no directory path passed');
+      });
     });
 
   });
